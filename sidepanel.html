@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notas</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <!-- Lista de notas -->
+  <main id="list-view" class="view">
+    <header class="bar">
+      <span id="bar-title" class="bar-title">Notas</span>
+    </header>
+
+    <div id="list-scroll" class="scroll">
+      <h1 id="large-title" class="large-title">Notas</h1>
+
+      <label class="search">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.75"/><path d="m13 13 4.25 4.25"/></svg>
+        <input id="search" type="search" placeholder="Buscar" autocomplete="off" spellcheck="false" aria-label="Buscar notas">
+      </label>
+
+      <div id="sections"></div>
+
+      <div id="empty" class="empty" hidden>
+        <p id="empty-title" class="empty-title">Nenhuma nota</p>
+        <p id="empty-text" class="empty-text">Crie sua primeira nota no botão abaixo.</p>
+      </div>
+    </div>
+
+    <footer class="toolbar">
+      <span></span>
+      <span id="count" class="toolbar-text"></span>
+      <button id="new-btn" class="icon-btn" type="button" title="Nova nota" aria-label="Nova nota">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4.5H6.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V13"/><path d="M17.6 3.4a1.9 1.9 0 0 1 2.7 2.7L12.5 14l-3.5.9.9-3.5z"/></svg>
+      </button>
+    </footer>
+  </main>
+
+  <!-- Editor -->
+  <section id="editor-view" class="view" hidden>
+    <header class="bar">
+      <button id="back-btn" class="back-btn" type="button" aria-label="Voltar para notas">
+        <svg viewBox="0 0 12 20" aria-hidden="true"><path d="M10 2 2 10l8 8"/></svg>
+        <span>Notas</span>
+      </button>
+      <div class="bar-actions">
+        <button id="pin-btn" class="icon-btn" type="button" title="Fixar nota" aria-label="Fixar nota" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3.5h6l-1 6 3.5 3.5h-11L10 9.5z"/><path d="M12 13v7.5"/></svg>
+        </button>
+        <button id="delete-btn" class="icon-btn" type="button" title="Apagar nota" aria-label="Apagar nota">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16"/><path d="M9.5 6.5V4.75c0-.7.55-1.25 1.25-1.25h2.5c.7 0 1.25.55 1.25 1.25V6.5"/><path d="m6 6.5.9 12.1a2 2 0 0 0 2 1.9h6.2a2 2 0 0 0 2-1.9L18 6.5"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div id="editor-scroll" class="scroll editor-scroll">
+      <time id="editor-date" class="editor-date"></time>
+      <input id="title" class="title-input" type="text" placeholder="Título" autocomplete="off" aria-label="Título">
+      <textarea id="body" class="body-input" placeholder="Comece a escrever…" aria-label="Texto da nota"></textarea>
+    </div>
+
+    <footer class="toolbar">
+      <span></span>
+      <span id="stats" class="toolbar-text"></span>
+      <span></span>
+    </footer>
+  </section>
+
+  <div id="toast" class="toast" role="status" hidden>
+    <span>Nota apagada</span>
+    <button id="undo-btn" type="button">Desfazer</button>
+  </div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>
