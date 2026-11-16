@@ -250,8 +250,9 @@ function openNote(id, { focus = 'body' } = {}) {
   editorScroll.scrollTop = 0;
   fillEditor(note);
   const target = focus === 'title' ? titleEl : bodyEl;
-  target.focus();
+  target.focus({ preventScroll: true });
   if (target === bodyEl) bodyEl.setSelectionRange(bodyEl.value.length, bodyEl.value.length);
+  editorScroll.scrollTop = 0; // abre a nota sempre no topo
 }
 
 function createNote() {
@@ -274,8 +275,31 @@ function onEdit() {
 }
 
 function autosize() {
+  const top = editorScroll.scrollTop;
   bodyEl.style.height = 'auto';
   bodyEl.style.height = `${bodyEl.scrollHeight}px`;
+  editorScroll.scrollTop = top; // evita "pulo" ao redimensionar
+}
+
+// Mantém o cursor visível ao digitar perto do fim da tela
+function keepCaretVisible() {
+  if (document.activeElement !== bodyEl) return;
+  const style = getComputedStyle(bodyEl);
+  const lineHeight = parseFloat(style.lineHeight) || 24;
+  // Mede a altura do texto até o cursor com um elemento espelho invisível
+  const mirror = keepCaretVisible.mirror || (keepCaretVisible.mirror = document.createElement('div'));
+  Object.assign(mirror.style, {
+    position: 'absolute', visibility: 'hidden', whiteSpace: 'pre-wrap', overflowWrap: 'break-word',
+    width: `${bodyEl.clientWidth}px`, font: style.font, lineHeight: style.lineHeight, letterSpacing: style.letterSpacing,
+  });
+  mirror.textContent = bodyEl.value.slice(0, bodyEl.selectionEnd) + '​';
+  document.body.append(mirror);
+  const caretY = bodyEl.offsetTop + mirror.offsetHeight;
+  mirror.remove();
+  const viewTop = editorScroll.scrollTop;
+  const viewBottom = viewTop + editorScroll.clientHeight;
+  if (caretY + lineHeight > viewBottom) editorScroll.scrollTop = caretY + lineHeight * 2 - editorScroll.clientHeight;
+  else if (caretY - lineHeight < viewTop) editorScroll.scrollTop = Math.max(0, caretY - lineHeight * 2);
 }
 
 function togglePin() {
@@ -339,7 +363,10 @@ searchEl.addEventListener('input', () => {
 });
 
 titleEl.addEventListener('input', onEdit);
-bodyEl.addEventListener('input', () => { autosize(); onEdit(); });
+bodyEl.addEventListener('input', () => { autosize(); keepCaretVisible(); onEdit(); });
+
+// Recalcula a altura quando a largura do painel muda
+new ResizeObserver(() => { if (currentId) autosize(); }).observe(editorScroll);
 
 titleEl.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' || (e.key === 'ArrowDown' && titleEl.selectionStart === titleEl.value.length)) {

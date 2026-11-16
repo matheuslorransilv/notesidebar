@@ -313,11 +313,15 @@ svg {
 /* ---------- Editor ---------- */
 
 .editor-scroll {
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: 4px 20px 40px;
   cursor: text;
 }
+
+/* Impede que o flex encolha o texto: ele cresce e quem rola é o painel */
+.editor-scroll > * { flex-shrink: 0; }
 
 .editor-date {
   display: block;
